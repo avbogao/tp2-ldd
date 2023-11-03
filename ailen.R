@@ -72,6 +72,18 @@ ggplot(clima_ecobici, aes(x = tmax, y = n)) + geom_point() + labs(title = "Usos 
 
 ## Usos vs dos variables
 
+#Cantidad de usos de bicicletas segun si es día laborable o no y temperatura promedio'
+
+clima_ecobici %>%
+  ggplot(aes(x=categoria_temp_promedio, y=(n/100)))+
+  facet_grid(~dia_laborable)+
+  geom_bar(stat = 'identity')+
+  labs(title = 'Cantidad de usos de bicicletas segun si es día laborable o no y temperatura promedio', x = 'Temperatura promedio del día de uso', y = 'Cantidad de usos', subtitle = 'Escala de usos: 1:100')+
+  theme(plot.title=element_text(size=14,face="bold"))+
+  theme(plot.subtitle=element_text(size=8,face='italic'))+
+  theme(axis.title=element_text(size=10))
+
+
 # lluvia vs dia laborable
 ggplot(clima_ecobici, aes(x = dia_laborable, y = n, fill = llueve)) + geom_col() + labs(title = "Usos segun dia laborable o no laborable y lluvia", y = "Cantidad de usos")
 
