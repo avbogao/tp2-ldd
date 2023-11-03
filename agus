@@ -1,0 +1,12 @@
+temperatura_mensual = clima_ecobici2 %>%
+  group_by(mes)%>%
+  summarise(tavg_prom = mean(tavg),
+            tmin_prom = mean(tmin),
+            tmax_prom = mean(tmax))
+
+
+meses_ordenados = c('enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre')
+
+temperatura_mensual$mes = factor(temperatura_mensual$mes, levels = meses_ordenados)
+
+temperatura_mensual = temperatura_mensual[order(temperatura_mensual$mes),]
