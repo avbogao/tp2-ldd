@@ -1,0 +1,16 @@
+clima_ecobici = clima_ecobici %>% mutate(llueve = prcp > 0) %>% mutate(dia_semana = weekdays(date)) %>% 
+  mutate(dia_laborable = dia_semana != 'sábado' & dia_semana != 'domingo' &
+           date != '2022-02-28' &
+           date != '2022-03-01' &
+           date != '2022-03-24' &
+           date != '2022-04-14' &
+           date != '2022-04-15' &
+           date != '2022-05-18' &
+           date != '2022-05-25' &
+           date != '2022-06-17' &
+           date != '2022-06-20' &
+           date != '2022-08-15' &
+           date != '2022-10-10' &
+           date != '2022-11-21' &
+           date != '2022-12-08' &
+           date != '2022-12-09' ) %>% mutate(mes = months(date))
