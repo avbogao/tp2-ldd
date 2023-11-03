@@ -18,7 +18,8 @@ clima_ecobici = clima_ecobici %>% mutate(llueve = prcp > 0) %>% mutate(dia_seman
            date != '2022-10-10' &
            date != '2022-11-21' &
            date != '2022-12-08' &
-           date != '2022-12-09' ) %>% mutate(mes = months(date)) 
+           date != '2022-12-09' ) %>% mutate(mes = months(date)) %>% 
+mutate(categoria_temp_promedio = cut(tavg, breaks=c(-Inf, 13,22,27,Inf), labels = c('Menor a 13°','13° a 22°', '22° a 27°', 'Mayor a 27°')))
 
 temperatura_mensual = clima_ecobici %>%
   group_by(mes)%>%
