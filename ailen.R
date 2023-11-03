@@ -9,7 +9,7 @@ clima_ecobici = clima_ecobici %>% mutate(llueve = prcp > 0) %>% mutate(dia_seman
 
 #Armamos vectores de meses y dias para ordenar los df que creemos
 meses_ordenados = c('enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre')
-dias_ordenados = c('lunes','martes','miercoles','jueves','viernes','sabado','domingo')
+dias_ordenados = c('lunes','martes','miércoles','jueves','viernes','sábado','domingo')
 
 
 
