@@ -146,3 +146,18 @@ ggplot(clima_ecobici, aes(x = tavg, y = n)) + geom_point(aes(color=dia_laborable
   geom_abline(intercept = b0 , slope = b2 , color = "red") + # dia_laborable == FALSE
   geom_abline(intercept = b0+b1 , slope = b2 , color = "red") # dia_laborable == TRUE
 
+
+
+
+
+#funcion error de prediccion
+
+error_prediccion = function(df, modelo_col) {
+  prediccion = predict(modelo_col, newdata = df)
+  sumatoria = sum((df$body_mass_g - prediccion)**2)
+  division = sumatoria / nrow(df)
+  return(division)
+}
+
+
+#modelo_col es pq hice al df le agregue una columna con la prediccion de cada modelo (guia7)
