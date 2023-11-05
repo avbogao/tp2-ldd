@@ -134,6 +134,38 @@ table(fakenews_test_prediccion_2k,fakenews_test[, 1])
 
 
 
+#ARBOL DE DECISION
+
+#modelo
+arbol_fake = rpart(type~., data = fakenews_train)
+
+#grafico del modelo
+rart.plot(arbol_fake)
+
+
+#predicción
+fakenews_test$pred_arbol=predict(arbol_fake,fakenews_test,type = 'class')
+
+
+
+
+#matriz de confusión
+table(fakenews_test$pred_arbol,fakenews_test$type)
+
+#El modelo predice 12 noticias fake pero en realidad son 8, y noticias reales predice 18 pero en realidad son 14.
+
+
+#precisión del modelo
+precision_arbol = 100*mean(fakenews_test$pred_arbol==fakenews_test$type)
+
+#el modelo tiene un 73,33% de precisión
+
+
+#CONCLUSIÓN: Entre ambos modelos, para este caso conviene utilizar el modelo KNN ya que la precisión de 
+#predicción es mayor (93,33% y 83,33% en KNN con K=1 y K=9 respectivamente vs 73,33% de precisión del arbol de decisión)
+
+
+
 
 
 
