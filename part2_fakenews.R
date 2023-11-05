@@ -164,8 +164,38 @@ precision_arbol = 100*mean(fakenews_test$pred_arbol==fakenews_test$type)
 #CONCLUSIÓN: Entre ambos modelos, para este caso conviene utilizar el modelo KNN ya que la precisión de 
 #predicción es mayor (93,33% y 83,33% en KNN con K=1 y K=9 respectivamente vs 73,33% de precisión del arbol de decisión)
 
+#creamos un nuevo dataframe con los datos nuevos que hay que predecir
+
+new_data = data.frame(type = NA,
+                      title_has_excl= FALSE,
+                      negative = 6.00,
+                      title_words = 15)
 
 
+#prediccion segun modelo KNN
 
+#con K=1
+new_data_prediccion_k1 = knn(train=fakenews_train[, -1],
+                               cl=fakenews_train[, 1],
+                               test=new_data[, -1],
+                               k=1)
+#resultado
+new_data_prediccion_k1
 
+#con k=9
+new_data_prediccion_k9 = knn(train=fakenews_train[, -1],
+                             cl=fakenews_train[, 1],
+                             test=new_data[, -1],
+                             k=9)
+#resultado
+new_data_prediccion_k9
+
+#prediccion segun arbol de decisión
+new_data$pred_arbol=predict(arbol_fake,new_data,type = 'class')
+
+#resultado
+new_data$pred_arbol
+
+#CONCLUSION: El modelo de predicción más preciso es el KNN con K=1, por lo que la noticia probablemente sea real. Sim embargo, el modelo KNN con K=9 y 
+#el arbol de decisión predicen que la noticia es fake aunque la precisión de ambos modelos es menor al 85%.
 
