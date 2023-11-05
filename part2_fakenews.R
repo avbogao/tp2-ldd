@@ -73,22 +73,6 @@ for (n in k){
 }
 
 
-k_maximo = resultado$k[order(resultado$precision, decreasing = TRUE)[1]]
-k_segundo = resultado$k[order(resultado$precision, decreasing = TRUE)[2]]
-
-fakenews_test_prediccion = knn(train=fakenews_train[, -1],
-                                 cl=fakenews_train[, 1],
-                                 test=fakenews_test[, -1],
-                                 k=k_maximo)
-
-
-fakenews_test_prediccion = knn(train=fakenews_train[, -1],
-                                 cl=fakenews_train[, 1],
-                                 test=fakenews_test[, -1],
-                                 k=k_segundo)
-
-
-
 resultado %>%
   ggplot(aes(k,precision))+
   geom_line()+
@@ -110,7 +94,46 @@ resultado %>%
 
 
 
-# con K = 1 la precisión del modelo es 0,933 mientras que el valor de precisión siguiente es 0,833 con K = 9. 
+#K con precisión máxima (K = 1)
+
+k_maximo = resultado$k[order(resultado$precision, decreasing = TRUE)[1]]
+
+
+fakenews_test_prediccion_kmax = knn(train=fakenews_train[, -1],
+                               cl=fakenews_train[, 1],
+                               test=fakenews_test[, -1],
+                               k=k_maximo)
+#ACCURANCY
+
+precision_kmax = mean(fakenews_test_prediccion_kmax == fakenews_test[, 1])
+
+#MATRIZ DE CONFUSION
+table(fakenews_test_prediccion_kmax,fakenews_test[, 1])
+
+#El modelo predijo 10 noticias fake y en el test el valor coincidia. Respecto de las noticias reales, predijo 20 noticias pero solo 18 coinciden.
+
+
+
+#K con segunda precisión (K = 9)
+
+k_segundo = resultado$k[order(resultado$precision, decreasing = TRUE)[2]]
+
+fakenews_test_prediccion_2k = knn(train=fakenews_train[, -1],
+                               cl=fakenews_train[, 1],
+                               test=fakenews_test[, -1],
+                               k=k_segundo)
+
+#ACCURANCY
+
+precision_2k = mean(fakenews_test_prediccion_2k == fakenews_test[, 1])
+
+#MATRIZ DE CONFUSION
+table(fakenews_test_prediccion_2k,fakenews_test[, 1])
+
+#El modelo predijo 9 noticias fake y en el test el valor real es 8. Respecto de las noticias reales, predijo 21 noticias pero solo 17 coinciden.
+
+
+
 
 
 
