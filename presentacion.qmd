@@ -1,0 +1,128 @@
+---
+title: "presentacion"
+format: html
+self-contained: true
+editor: visual
+---
+
+
+
+
+En el siguiente trabajo vamos a elaborar un modelo de regresión para predecir el número de usos diarios del sistema de Ecobici. Para ello analizaremos primero cuáles son las variables qué más influyen a la hora de usar dicho sistema.
+
+
+Las variables a analizar son:
+
+-   temperatura del día (promedio, mínima o máxima).
+
+-   si llueve o no llueve.
+
+-   presión atmosférica.
+
+-   velocidad del viento.
+
+-   si es día laborable o no laborable.
+
+
+Primero preparamos el dataset ya que algunas de estas variables no están directamente visibles.
+
+```{r, output = FALSE}
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+load("tp2.RData")
+library(Metrics)
+
+clima_ecobici = clima_ecobici %>% mutate(llueve = prcp > 0) %>% mutate(dia_semana = weekdays(date)) %>% 
+  mutate(dia_laborable = dia_semana != 'sábado' & dia_semana != 'domingo' & date != '2022-02-28' &
+           date != '2022-03-01' &
+           date != '2022-03-24' &
+           date != '2022-04-14' &
+           date != '2022-04-15' &
+           date != '2022-05-18' &
+           date != '2022-05-25' &
+           date != '2022-06-17' &
+           date != '2022-06-20' &
+           date != '2022-08-15' &
+           date != '2022-10-10' &
+           date != '2022-11-21' &
+           date != '2022-12-08' &
+           date != '2022-12-09' ) %>% 
+  mutate(categoria_temp_promedio = cut(tavg, breaks=c(-Inf, 13,22,27,Inf), labels = c('Menor a 13°','13° a 22°', '22° a 27°', 'Mayor a 27°')))
+```
+
+Veamos el promedio de usos para los días que llueve y los que no
+
+```{r}
+clima_ecobici %>%
+  group_by(llueve) %>%
+  summarise(mean(n))
+```
+ Observamos que el promedio es ligeramente menor los días que llueve. Hagámos el mismo análisis para los días laborables
+ 
+```{r}
+clima_ecobici %>%
+  group_by(dia_laborable) %>%
+  summarise(mean(n))
+```
+Podemos ver que el promedio de usos es mucho mayor en los días laborables.
+
+Ahora para analizar las variables que quedan haremos un gráfico, ya que son variables numeŕicas
+
+```{r}
+ggplot(clima_ecobici, aes(x = pres, y = n)) + geom_point() + labs(title = "Usos segun presion atmosferica", y = "Cantidad de usos")
+```
+
+```{r}
+ggplot(clima_ecobici, aes(x = wspd, y = n)) + geom_point() + labs(title = "Usos segun velocidad del viento", y = "Cantidad de usos", x = "Velocidad del viento")
+```
+```{r}
+ggplot(clima_ecobici, aes(x = tavg, y = n)) + geom_point() + labs(title = "Usos segun temperatura promedio", y = "Cantidad de usos")
+```
+En principio los datos parecen estar bastante dispersos, pero veamos que pasa si separamos los puntos por color en base a si son de un día laborable o no:
+
+```{r}
+ggplot(clima_ecobici, aes(x = tavg, y = n)) + geom_point(aes(color=dia_laborable)) + labs(title = "Usos segun temperatura promedio y dia laborable", y = "Cantidad de usos")
+```
+
+Para armar el modelo usaremos las variables `dias_laborables` y `tavg`
+
+```{r}
+# Creacion de datasets de entrenamiento y de prueba
+set.seed(22)
+sample = sample(c(TRUE, FALSE), nrow(clima_ecobici), replace = T,prob=c(0.8,0.2))
+train  <- clima_ecobici[sample, ]
+test   <- clima_ecobici[!sample, ]
+
+# Modelo de regresion lineal (Entrenamiento)
+model = lm(n ~ dia_laborable + tavg, train)
+summary(model)
+b0 = coef(model)[1]
+b1 = coef(model)[2]
+b2 = coef(model)[3]
+```
+
+Veamos que tan bien predice
+
+```{r}
+test$usos_pred = predict(model, test, type = "response")
+
+# error cuadratico medio, y el r cuadrado
+rmse(test$n, test$usos_pred)
+summary(model)$r.squared # es un buen modelo
+# The lowest R-squared is 0 and means that the points are not explained by the regression whereas the highest R-squared is 1 and 
+# means that all the points are explained by the regression line
+
+usos_pred = predict(model, clima_ecobici, type = "response")
+## Graficos
+ggplot(clima_ecobici, aes(x = tavg, y = n)) + geom_point(aes(color=dia_laborable)) + 
+  labs(title = "Usos segun temperatura promedio y dia laborable", y = "Cantidad de usos", x = "Temperatura promedio (ºC)") + 
+  geom_abline(intercept = b0 , slope = b2 , color = "red") + # dia_laborable == FALSE
+  geom_abline(intercept = b0+b1 , slope = b2 , color = "blue") # dia_laborable == TRUE
+```
+
+
+
+
+
+

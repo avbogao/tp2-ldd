@@ -16,8 +16,16 @@ fake_news %>%
   labs(title = 'Cantidad de noticias que contienen signos de exclamación', x= 'Contiene o no contiene', y='Cantidad')+
   theme(plot.title = element_text(face='bold'))
 
-#Cantidad de noticias por % de expresiones negativas
+## Quizas asi se visualiza mejor
+fake_news %>%
+  group_by(type)%>%
+  count(title_has_excl)%>%
+  ggplot(aes(x=title_has_excl, y = n, fill = type))+
+  geom_col()+
+  labs(title = 'Cantidad de noticias que contienen signos de exclamación', x= 'Contiene o no contiene', y='Cantidad')+
+  theme(plot.title = element_text(face='bold'))
 
+#Cantidad de noticias por % de expresiones negativas
 fake_news %>%
   group_by(type)%>%
   count(categoria_negativa)%>%
@@ -26,6 +34,14 @@ fake_news %>%
   labs(title = 'Cantidad de noticias que contienen % expresiones negativas en el titulo', x= '% contenido', y='Cantidad')+
   theme(plot.title = element_text(face='bold'))
 
+#Cantidad de noticias por % de expresiones negativas (v2 idem anterior)
+fake_news %>%
+  group_by(type)%>%
+  count(categoria_negativa)%>%
+  ggplot(aes(x=categoria_negativa, y = n, fill = type))+
+  geom_col()+
+  labs(title = 'Cantidad de noticias que contienen % expresiones negativas en el titulo', x= '% contenido', y='Cantidad')+
+  theme(plot.title = element_text(face='bold'))
 
 #Cantidad de palabras en el titulo
 fake_news %>%
@@ -33,6 +49,15 @@ fake_news %>%
   count(cantidad_palabras_titulo)%>%
   ggplot(aes(x=cantidad_palabras_titulo, y = n, color = type))+
   geom_point()+
+  labs(title = 'Cantidad de palabras en el titulo', x= 'Cantidad de palabras en el titulo', y='Cantidad de noticias')+
+  theme(plot.title = element_text(face='bold'))
+
+#Cantidad de palabras en el titulo (v2 idem anterior)
+fake_news %>%
+  group_by(type)%>%
+  count(cantidad_palabras_titulo)%>%
+  ggplot(aes(x=cantidad_palabras_titulo, y = n, fill = type))+
+  geom_col()+
   labs(title = 'Cantidad de palabras en el titulo', x= 'Cantidad de palabras en el titulo', y='Cantidad de noticias')+
   theme(plot.title = element_text(face='bold'))
 
@@ -53,7 +78,7 @@ set.seed(123)
 fakenews_train = fake_news2 %>%
   sample_frac(0.8,replace = F) 
 
-fakenews_test = anti_join(fake_news2,df_train)
+fakenews_test = anti_join(fake_news2,df_train) #??
 
 
 #para poder armar el modelo de KNN es necesario elegir primero un K que sirva de referencia para que el modelo pueda predecir la respuesta. Dependiendo el K elegido,
