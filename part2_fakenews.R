@@ -226,7 +226,7 @@ new_data_prediccion_k9 = knn(train=fakenews_train[, -1],
 new_data_prediccion_k9
 
 #prediccion segun arbol de decisión
-new_data$pred_arbol=predict(arbol_fake,new_data,type = 'class')
+new_data$pred_arbol=predict(arbol_fake,new_data,type = 'prob')
 
 #resultado
 new_data$pred_arbol
