@@ -1,3 +1,13 @@
+library(tidyverse)
+library(ggplot2)
+library(class)
+library(rpart)
+library(rpart.plot)
+library(party)
+
+
+
+
 #BASE MODIFICADA
 
 fake_news= fake_news %>%
