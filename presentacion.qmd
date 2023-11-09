@@ -81,22 +81,22 @@ Podemos ver que el promedio de usos es mucho mayor en los días laborables.
 Ahora para analizar las variables que quedan haremos gráficos, ya que son variables numéricas
 
 ```{r}
-ggplot(clima_ecobici, aes(x = pres, y = n)) + geom_point() + labs(title = "Usos según presión atmosferica", y = "Cantidad de usos", x = "Presión")
+ggplot(clima_ecobici, aes(x = pres, y = n)) + geom_point() + labs(title = "Usos según presión atmosferica", y = "Cantidad de usos", x = "Presión") + theme(plot.title = element_text(face='bold'))
 ```
 
 ```{r}
-ggplot(clima_ecobici, aes(x = wspd, y = n)) + geom_point() + labs(title = "Usos según velocidad del viento", y = "Cantidad de usos", x = "Velocidad del viento")
+ggplot(clima_ecobici, aes(x = wspd, y = n)) + geom_point() + labs(title = "Usos según velocidad del viento", y = "Cantidad de usos", x = "Velocidad del viento") + theme(plot.title = element_text(face='bold'))
 ```
 
 ```{r}
-ggplot(clima_ecobici, aes(x = tavg, y = n)) + geom_point() + labs(title = "Usos según temperatura promedio", y = "Cantidad de usos", x = "Temperatura promedio (°C)")
+ggplot(clima_ecobici, aes(x = tavg, y = n)) + geom_point() + labs(title = "Usos según temperatura promedio", y = "Cantidad de usos", x = "Temperatura promedio (°C)") + theme(plot.title = element_text(face='bold'))
 ```
 
 En principio los datos parecen estar bastante dispersos, sin embargo, en este último gráfico puede observarse una separación de los datos en dos nubes (una encima de otra).
 Veamos que pasa si separamos los puntos por color en base a si son de un día laborable o no:
 
 ```{r}
-ggplot(clima_ecobici, aes(x = tavg, y = n)) + geom_point(aes(color=dia_laborable)) + labs(title = "Usos según temperatura promedio y día laborable", y = "Cantidad de usos", x =  "Temperatura promedio (°C)")
+ggplot(clima_ecobici, aes(x = tavg, y = n)) + geom_point(aes(color=dia_laborable)) + labs(title = "Usos según temperatura promedio y día laborable", y = "Cantidad de usos", x =  "Temperatura promedio (°C)") + theme(plot.title = element_text(face='bold'))
 ```
 
 Para armar el modelo usaremos las variables `dias_laborables` y `tavg` porque observamos (mediante el análisis exploratorio realizado anteriormente) que son probablemente las mejores predictoras.
@@ -130,9 +130,10 @@ summary(model)$r.squared
 usos_pred = predict(model, clima_ecobici, type = "response")
 ## Gráficos
 ggplot(clima_ecobici, aes(x = tavg, y = n)) + geom_point(aes(color=dia_laborable)) + 
-  labs(title = "Usos según temperatura promedio y día laborable", y = "Cantidad de usos", x = "Temperatura promedio (ºC)") + 
+  labs(title = "Usos según temperatura promedio y día laborable", y = "Cantidad de usos", x = "Temperatura promedio (ºC)")  + theme(plot.title = element_text(face='bold')) +
   geom_abline(intercept = b0 , slope = b2 , color = "red") + # dia_laborable == FALSE
   geom_abline(intercept = b0+b1 , slope = b2 , color = "blue") # dia_laborable == TRUE
+
 ```
 La línea roja representa la relación entre la temperatura y la cantidad de usos para los días no laborables. La línea azul representa la relación para los días laborables.
 
@@ -162,7 +163,6 @@ fake_news= fake_news %>%
 
 ```
 
-Este gráfico representa la cantidad de noticias que tienen signos de exclamación en el titulo, según el tipo de noticia.
 
 ```{r}
 fake_news %>%
@@ -175,7 +175,6 @@ fake_news %>%
 
 ```
 
-Este gráfico representa la cantidad de noticias según porcentaje de valoración de connotación negativa de palabras en el título.
 
 ```{r}
 fake_news %>%
@@ -187,7 +186,6 @@ fake_news %>%
   theme(plot.title = element_text(face='bold'))
 ```
 
-Este gráfico representa la cantidad de palaras en el titulo segun tipo de noticia.
 
 ```{r}
 fake_news %>%
@@ -199,9 +197,9 @@ fake_news %>%
   theme(plot.title = element_text(face='bold'))
 ```
 
-**Conclusión del analisis exploratorio:** Podemos observar que las noticias falsas tienen mayor cantidad de signos de exclamación en el titulo que las noticias reales, que además tienen mayor porcentaje de palabras de connotación negativa en sus titulos que las noticias reales y que los titulos son más cortos.
+**Conclusión del analisis exploratorio:** Podemos observar que las noticias falsas tienen mayor cantidad de signos de exclamación en el titulo que las noticias reales, además tienen mayor porcentaje de palabras de connotación negativa en sus titulos y los titulos son más cortos.
 
-Ahora reducimos la base trabajar mejor. Solo dejamos el tipo de noticia y las tres variables a considerar.
+Ahora reducimos la base para trabajar mejor. Solo dejamos el tipo de noticia y las tres variables a considerar.
 
 ```{r}
 fake_news2 = fake_news %>%
@@ -278,7 +276,7 @@ precision_2k = mean(fakenews_model_2k == fakenews_test[, 1])
 precision_2k
 ```
 
-Elaboramos la matiz de confusión del modelo segun cada k
+Elaboramos la matiz de confusión del modelo según cada k
 
 *Matriz de confusión para el k maximo*
 
@@ -310,7 +308,7 @@ if (sum(mc_2k[ ,'fake']) == sum(mc_2k['fake', ])){cat('el valor coincidió.')} e
 cat('\nRespecto de las noticias reales, predijo ', sum(mc_2k['real', ]),' noticias pero solo ', mc_2k['real','real'],' coinciden.')
 ```
 
-Finamente, el siguiente grafico de evolución se observa la precisión en función del K.
+Finamente, el siguiente gráfico de evolución se observa la precisión en función del K.
 
 ```{r}
 resultado %>% 
@@ -333,7 +331,7 @@ resultado %>%
   labs(title = 'Evolución de la precisión según K elegido para el modelo')
 ```
 
-# Arbol de Decisión
+# Árbol de Decisión
 
 Elaboramos el modelo
 
@@ -353,14 +351,14 @@ Agregamos una columna a la base de test con el resultado de la predicción
 fakenews_test$pred_arbol=predict(arbol_fake,fakenews_test,type = 'class')
 ```
 
-Evaluamos la precisión del modelo
+Evaluamos la precisión del modelo (Accuracy)
 
 ```{r}
 precision_arbol = mean(fakenews_test$pred_arbol==fakenews_test$type)
 precision_arbol
 ```
 
-Evaluamos la matriz de confusión del arbol de decisión
+Evaluamos la matriz de confusión del árbol de decisión
 
 ```{r}
 mc_arbol = table(fakenews_test$pred_arbol,fakenews_test$type)
@@ -381,7 +379,7 @@ cat('\nRespecto de las noticias reales, predijo ', sum(mc_arbol['real', ]),' not
 precisiones_modelos = c(precision_kmax,precision_2k,precision_arbol)
 mayor_precision = max(precisiones_modelos)
 if (mayor_precision == precision_kmax) {
-  cat('El modelo que mayor precisión tiene es el Modelo KNN con el K=',k_maximo, 'y su precisión es de ', precision_kmax*100, '%')} else if (mayor_precision == precision_2k) {cat('El modelo que mayor precision tiene es Modelo KNN con el K=', k_segundo, 'y su precision es de ', precision_2k*100,'%')} else {cat('El modelo que mayor precision tiene es el Arbol de decisión y su precision es de ', precision_arbol*100,'%')}
+  cat('El modelo que mayor precisión tiene es el Modelo KNN con el K=',k_maximo, 'y su precisión es de ', precision_kmax*100, '%')} else if (mayor_precision == precision_2k) {cat('El modelo que mayor precisión tiene es Modelo KNN con el K=', k_segundo, 'y su precisión es de ', precision_2k*100,'%')} else {cat('El modelo que mayor precisión tiene es el árbol de decisión y su precisión es de ', precision_arbol*100,'%')}
   
 ```
 
@@ -394,7 +392,7 @@ new_data = data.frame(type = NA,
                       title_words = 15)
 ```
 
-Hacemos la prediccion segun modelo KNN:
+Hacemos la predicción según modelo KNN:
 
 *con K=maximo*
 
@@ -435,7 +433,7 @@ if (prob_2K[1] == 'fake') {
 cat(probabilidad_fake2 * 100, '%\n')
 ```
 
-Hacemos la prediccion segun arbol de decisión y le agregamos la columna al dataframe en estudio:
+Hacemos la predicción según árbol de decisión y le agregamos la columna al dataframe en estudio:
 
 ```{r}
 new_data$pred_arbol=predict(arbol_fake,new_data,type = 'prob')
