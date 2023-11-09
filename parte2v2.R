@@ -3,7 +3,7 @@ library(ggplot2)
 library(class)
 library(rpart)
 library(rpart.plot)
-library(party)
+
 
 
 
@@ -21,30 +21,13 @@ fake_news= fake_news %>%
 fake_news %>%
   group_by(type)%>%
   count(title_has_excl)%>%
-  ggplot(aes(x=title_has_excl, y = n, color = type))+
-  geom_point()+
-  labs(title = 'Cantidad de noticias que contienen signos de exclamación', x= 'Contiene o no contiene', y='Cantidad')+
-  theme(plot.title = element_text(face='bold'))
-
-## Quizas asi se visualiza mejor
-fake_news %>%
-  group_by(type)%>%
-  count(title_has_excl)%>%
   ggplot(aes(x=title_has_excl, y = n, fill = type))+
   geom_col()+
   labs(title = 'Cantidad de noticias que contienen signos de exclamación', x= 'Contiene o no contiene', y='Cantidad')+
   theme(plot.title = element_text(face='bold'))
 
 #Cantidad de noticias por % de expresiones negativas
-fake_news %>%
-  group_by(type)%>%
-  count(categoria_negativa)%>%
-  ggplot(aes(x=categoria_negativa, y = n, color = type))+
-  geom_point()+
-  labs(title = 'Cantidad de noticias que contienen % expresiones negativas en el titulo', x= '% contenido', y='Cantidad')+
-  theme(plot.title = element_text(face='bold'))
 
-#Cantidad de noticias por % de expresiones negativas (v2 idem anterior)
 fake_news %>%
   group_by(type)%>%
   count(categoria_negativa)%>%
@@ -54,15 +37,6 @@ fake_news %>%
   theme(plot.title = element_text(face='bold'))
 
 #Cantidad de palabras en el titulo
-fake_news %>%
-  group_by(type)%>%
-  count(cantidad_palabras_titulo)%>%
-  ggplot(aes(x=cantidad_palabras_titulo, y = n, color = type))+
-  geom_point()+
-  labs(title = 'Cantidad de palabras en el titulo', x= 'Cantidad de palabras en el titulo', y='Cantidad de noticias')+
-  theme(plot.title = element_text(face='bold'))
-
-#Cantidad de palabras en el titulo (v2 idem anterior)
 fake_news %>%
   group_by(type)%>%
   count(cantidad_palabras_titulo)%>%
@@ -100,11 +74,11 @@ k = 1:120
 resultado = data.frame(k, precision = 0)
 
 for (n in k){
-  fakenews_test_prediccion = knn(train=fakenews_train[, -1],
+  fakenews_model = knn(train=fakenews_train[, -1],
                                  cl=fakenews_train[, 1],
                                  test=fakenews_test[, -1],
                                  k=n)
-  resultado$precision[n] = mean(fakenews_test_prediccion == fakenews_test[, 1])
+  resultado$precision[n] = mean(fakenews_model == fakenews_test[, 1])
 }
 
 
@@ -154,9 +128,9 @@ table(fakenews_model_kmax,fakenews_test[, 1])
 k_segundo = resultado$k[order(resultado$precision, decreasing = TRUE)[2]]
 
 fakenews_model_2k = knn(train=fakenews_train[, -1],
-                                  cl=fakenews_train[, 1],
-                                  test=fakenews_test[, -1],
-                                  k=k_segundo)
+                        cl=fakenews_train[, 1],
+                        test=fakenews_test[, -1],
+                        k=k_segundo)
 
 #ACCURANCY
 
@@ -209,11 +183,11 @@ new_data = data.frame(type = NA,
 
 #con K=maximo
 
-prob_kmax = predict(fakenews_model_kmax, new_data)
+prob_kmax = predict(fakenews_model_kmax, newdata = new_data, type='prob')
 
 
 #con k=segundo
-prob_2k = predict(fakenews_model_2k, new_data)
+prob_2k = predict(fakenews_model_2k, new_data, type = 'prob')
 
 #prediccion segun arbol de decisión
 new_data$pred_arbol=predict(arbol_fake,new_data,type = 'prob')
