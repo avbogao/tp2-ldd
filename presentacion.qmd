@@ -289,7 +289,7 @@ mc_kmax
 
 *Conclusión*:
 
-```{r}
+```{r echo=FALSE}
 cat("El modelo predijo", sum(mc_kmax['fake', ]), "noticias falsas y en el test ")
 if (sum(mc_kmax[ ,'fake']) == sum(mc_kmax['fake', ])){cat('el valor coincidió.')} else {cat('el valor no coincidió.')}
 cat('\nRespecto de las noticias reales, predijo ', sum(mc_kmax['real', ]),' noticias pero solo ', mc_kmax['real','real'],' coinciden.')
@@ -304,7 +304,7 @@ mc_2k
 
 *Conclusión:*
 
-```{r}
+```{r echo=FALSE}
 cat("El modelo predijo", sum(mc_2k['fake', ]), "noticias falsas y en el test ")
 if (sum(mc_2k[ ,'fake']) == sum(mc_2k['fake', ])){cat('el valor coincidió.')} else {cat('el valor no coincidió.')}
 cat('\nRespecto de las noticias reales, predijo ', sum(mc_2k['real', ]),' noticias pero solo ', mc_2k['real','real'],' coinciden.')
@@ -369,7 +369,7 @@ mc_arbol
 
 *Conclusión de la matriz de confusión:*
 
-```{r}
+```{r echo=FALSE}
 cat("El modelo predijo", sum(mc_arbol['fake', ]), "noticias falsas y en el test ")
 if (sum(mc_arbol[ ,'fake']) == sum(mc_arbol['fake', ])){cat('el valor coincidió.')} else {cat('el valor no coincidió.')}
 cat('\nRespecto de las noticias reales, predijo ', sum(mc_arbol['real', ]),' noticias pero solo ', mc_arbol['real','real'],' coinciden.')
@@ -377,7 +377,7 @@ cat('\nRespecto de las noticias reales, predijo ', sum(mc_arbol['real', ]),' not
 
 **Comparación entre ambos modelos. CONCLUSIÓN:**
 
-```{r}
+```{r echo=FALSE}
 precisiones_modelos = c(precision_kmax,precision_2k,precision_arbol)
 mayor_precision = max(precisiones_modelos)
 if (mayor_precision == precision_kmax) {
@@ -404,7 +404,8 @@ prob_kmax = knn(train=fakenews_train[, -1],
                 test=new_data[, -1],
                 k=k_maximo,
                 prob = TRUE)
-
+```
+```{r echo=FALSE}
 cat('La probabilidad de que la noticia sea fake es de ')
 if (prob_kmax[1] == 'fake') {
   probabilidad_fake = attr(prob_kmax, 'prob')
@@ -414,6 +415,7 @@ if (prob_kmax[1] == 'fake') {
 cat(probabilidad_fake * 100, '%\n')
 ```
 
+
 *con K=segundo*
 
 ```{r}
@@ -422,12 +424,14 @@ prob_2K = knn(train=fakenews_train[, -1],
               test=new_data[, -1],
               k=k_segundo,
               prob = TRUE)
+```
 
+```{r echo=FALSE}
 cat('La probabilidad de que la noticia sea fake es de ')
 if (prob_2K[1] == 'fake') {
   probabilidad_fake2 = attr(prob_2K, 'prob')} else {
   probabilidad_fake2 = 1 - attr(prob_2K, 'prob')
-}
+} 
 cat(probabilidad_fake2 * 100, '%\n')
 ```
 
@@ -436,6 +440,8 @@ Hacemos la prediccion segun arbol de decisión y le agregamos la columna al data
 ```{r}
 new_data$pred_arbol=predict(arbol_fake,new_data,type = 'prob')
 
-cat('La probabilidad de que la noticia sea fake es de ', new_data$pred_arbol[,'fake']*100,'%')
+```
 
+```{r echo=FALSE}
+cat('La probabilidad de que la noticia sea fake es de ', new_data$pred_arbol[,'fake']*100,'%')
 ```
