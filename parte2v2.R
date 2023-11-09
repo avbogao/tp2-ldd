@@ -82,24 +82,6 @@ for (n in k){
 }
 
 
-resultado %>%
-  ggplot(aes(k,precision))+
-  geom_line()+
-  geom_vline(xintercept = k_maximo,
-             linetype = 2, 
-             color = 2)+
-  geom_vline(xintercept = k_segundo,
-             linetype = 2,
-             color= 4)+
-  geom_hline(yintercept = precision_kmax,
-             linetype = 2, 
-             color = 2)+
-  geom_hline(yintercept = precision_2k,
-             linetype = 2,
-             color= 4)+
-  geom_point(aes(k_maximo,precision_kmax), color = 'red')+
-  geom_point(aes(k_segundo,precision_2k), color = 'blue')+
-  labs(title = 'Evolución de la precisión según K elegido para el modelo')
 
 
 
@@ -141,6 +123,26 @@ table(fakenews_model_2k,fakenews_test[, 1])
 
 #El modelo predijo 9 noticias fake y en el test el valor real es 8. Respecto de las noticias reales, predijo 21 noticias pero solo 17 coinciden.
 
+
+#GRAFICO DE EVOLUCION DE LAS K EN FUNCION DE LA PRECISION
+resultado %>%
+  ggplot(aes(k,precision))+
+  geom_line()+
+  geom_vline(xintercept = k_maximo,
+             linetype = 2, 
+             color = 2)+
+  geom_vline(xintercept = k_segundo,
+             linetype = 2,
+             color= 4)+
+  geom_hline(yintercept = precision_kmax,
+             linetype = 2, 
+             color = 2)+
+  geom_hline(yintercept = precision_2k,
+             linetype = 2,
+             color= 4)+
+  geom_point(aes(k_maximo,precision_kmax), color = 'red')+
+  geom_point(aes(k_segundo,precision_2k), color = 'blue')+
+  labs(title = 'Evolución de la precisión según K elegido para el modelo')
 
 
 #ARBOL DE DECISION
