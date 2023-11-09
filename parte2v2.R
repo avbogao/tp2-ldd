@@ -75,9 +75,9 @@ resultado = data.frame(k, precision = 0)
 
 for (n in k){
   fakenews_model = knn(train=fakenews_train[, -1],
-                                 cl=fakenews_train[, 1],
-                                 test=fakenews_test[, -1],
-                                 k=n)
+                       cl=fakenews_train[, 1],
+                       test=fakenews_test[, -1],
+                       k=n)
   resultado$precision[n] = mean(fakenews_model == fakenews_test[, 1])
 }
 
@@ -91,9 +91,9 @@ k_maximo = resultado$k[order(resultado$precision, decreasing = TRUE)[1]]
 
 
 fakenews_model_kmax = knn(train=fakenews_train[, -1],
-                                    cl=fakenews_train[, 1],
-                                    test=fakenews_test[, -1],
-                                    k=k_maximo)
+                          cl=fakenews_train[, 1],
+                          test=fakenews_test[, -1],
+                          k=k_maximo)
 #ACCURANCY
 
 precision_kmax = mean(fakenews_model_kmax == fakenews_test[, 1])
@@ -185,11 +185,27 @@ new_data = data.frame(type = NA,
 
 #con K=maximo
 
-prob_kmax = predict(fakenews_model_kmax, newdata = new_data, type='prob')
+prob_kmax = knn(train=fakenews_train[, -1],
+                cl=fakenews_train[, 1],
+                test=new_data[, -1],
+                k=k_maximo,
+                prob = TRUE)
 
+prob_kmax
+
+
+prob_2K = knn(train=fakenews_train[, -1],
+                cl=fakenews_train[, 1],
+                test=new_data[, -1],
+                k=k_segundo,
+                prob = TRUE)
+
+prob_2K
+
+attr(prob_2K,'prob')
 
 #con k=segundo
-prob_2k = predict(fakenews_model_2k, new_data, type = 'prob')
+#prob_2k = predict(fakenews_model_2k, new_data, type = 'prob')
 
 #prediccion segun arbol de decisión
 new_data$pred_arbol=predict(arbol_fake,new_data,type = 'prob')
